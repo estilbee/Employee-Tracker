@@ -2,7 +2,7 @@ const inquirer = require('inquirer')
 const connection = require('./connection')
 
 
-const mainmenu = () => {
+const mainMenu = () => {
     return inquirer.prompt([
       {
         type: "list",
@@ -40,34 +40,25 @@ const mainmenu = () => {
     });
   };
   
-  mainmenu();
+  mainMenu();
 
   const addDepartment = () => {
-  
-    return connection.query(
-    `INSERT INTO department SET ?`,
-     inquirer.prompt([
+    inquirer.prompt([
         {
           type: "input",
           message: "What is the department's name?",
           name: "department_name"
         }
       ],
-      function (err, result) {
-        if (err) {
-          console.log(err);
-        }
-        console.log(result);
-        mainmenu();
-      })
-    
-  )}
+      ) .then(data => {
+   connection.query(
+    `INSERT INTO department SET ?`, {name:data.department_name})
+    mainMenu(); })
+    }
 
   const addRole = () => {
-  
-    return connection.query(
-    `INSERT INTO role SET ?`,
-     inquirer.prompt([
+    connection.query("SELECT * FROM department", (err,res) => {
+    inquirer.prompt([
         {
           type: "input",
           message: "What is the name of the role?",
@@ -79,19 +70,29 @@ const mainmenu = () => {
             name: "salary"
         },
         {
-            type: "input",
+            type: "list",
             message: "What is the department of the role?",
+            choices: res.map(department => department.name),
             name: "department"
         }
-      ],
-      function (err, result) {
-        if (err) {
-          console.log(err);
-        }
-        console.log(result);
-        mainmenu();
-      })
-  )}
+      ],) .then(data => { 
+        let selectedDepartment = res.find(department => department.name === data.department)
+        //find the department name that is = to the one in the res ans store it in a variable so we can get its id
+   connection.query(
+    `INSERT INTO role SET ?`, {title:data.role_name, salary:data.salary, department_id:selectedDepartment.id})
+    
+})
+})  
+  }
+
+  const testAddEmployee = () => {
+    connection.query ('SELECT * FROM role', (err,res) => {
+        //inquirer prompt in here *follow the way addRole looks
+        //map role => role.title (instead of department.name) for role choices
+        //.then convert chosen role title to its id on INSERT INTO SET
+    })
+  }
+
 
   const addEmployee = () => {
   
@@ -124,10 +125,27 @@ const mainmenu = () => {
           console.log(err);
         }
         console.log(result);
-        mainmenu();
+        mainMenu();
       })
   )}
 
+  const viewDepartments = () => {
+    connection.query ("SELECT * FROM department", (err,res) => {
+        if (err) throw err
+        console.table(res)
+        mainMenu();
+    } )
+
+  }
+  const viewRoles = () => {
+    connection.query ("SELECT * FROM role", (err,res) => {
+        if (err) throw err
+        console.table(res)
+        mainMenu();
+    } )
+
+  }
+  //other tables match ^^ just change department to whichever table 
 
   
   const program_exit = () =>{
