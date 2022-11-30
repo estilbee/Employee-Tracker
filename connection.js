@@ -5,13 +5,13 @@ const connection = mysql.createConnection({
   // Your username
   user: "root",
   // Your password
-  password: "rootroot",
-  database: "airline_db"
+  password: "code",
+  database: ""
 });
 
 connection.connect(function (err) {
   if (err) throw err;
-  // console.log("Connected!!!\n\n\n");
+  console.log("Connected!\n\n\n");
 });
 
 module.exports = connection;
