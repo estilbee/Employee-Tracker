@@ -41,5 +41,96 @@ const mainmenu = () => {
   };
   
   mainmenu();
+
+  const addDepartment = () => {
   
+    return connection.query(
+    `INSERT INTO department SET ?`,
+     inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the department's name?",
+          name: "department_name"
+        }
+      ],
+      function (err, result) {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result);
+        mainmenu();
+      })
+    
+  )}
+
+  const addRole = () => {
   
+    return connection.query(
+    `INSERT INTO role SET ?`,
+     inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the name of the role?",
+          name: "role_name"
+        },
+        {
+            type: "input",
+            message: "What is the salary of the role?",
+            name: "salary"
+        },
+        {
+            type: "input",
+            message: "What is the department of the role?",
+            name: "department"
+        }
+      ],
+      function (err, result) {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result);
+        mainmenu();
+      })
+  )}
+
+  const addEmployee = () => {
+  
+    return connection.query(
+    `INSERT INTO employee SET ?`,
+     inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the first name of the employee?",
+          name: "first_name"
+        },
+        {
+            type: "input",
+            message: "What is the last name of the employee?",
+            name: "last_name"
+        },
+        {
+            type: "input",
+            message: "What is the employee's role?",
+            name: "role"
+        },
+        {
+            type: "input",
+            message: "Who is the employee's manager?",
+            name: "manager"
+        }
+      ],
+      function (err, result) {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result);
+        mainmenu();
+      })
+  )}
+
+
+  
+  const program_exit = () =>{
+    // use this when you want to exit the script
+    connection.end();
+  }
