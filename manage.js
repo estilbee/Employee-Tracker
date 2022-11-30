@@ -118,11 +118,14 @@ const mainMenu = () => {
             name: "manager"
         }
       ])
-      // missing .then and let 
+      .then(data => { 
+        let selectedEmployee = res.find(department => department.name === data.department)
       return connection.query(
         `INSERT INTO employee SET ?`, 
         //missing {with employee data}
-        )
+        {first_name:data.first_name, last_name:data.last_name, role_id:selectedEmployee.id})
+    
+        })
     })
   }
 
