@@ -95,9 +95,7 @@ const mainMenu = () => {
 
 
   const addEmployee = () => {
-  
-    return connection.query(
-    `INSERT INTO employee SET ?`,
+    connection.query ('SELECT * FROM role', (err,res) => {
      inquirer.prompt([
         {
           type: "input",
@@ -111,7 +109,7 @@ const mainMenu = () => {
         },
         {
             type: "input",
-            message: "What is the employee's role?",
+            message: res.map(role => role.title),
             name: "role"
         },
         {
@@ -119,15 +117,14 @@ const mainMenu = () => {
             message: "Who is the employee's manager?",
             name: "manager"
         }
-      ],
-      function (err, result) {
-        if (err) {
-          console.log(err);
-        }
-        console.log(result);
-        mainMenu();
-      })
-  )}
+      ])
+      // missing .then and let 
+      return connection.query(
+        `INSERT INTO employee SET ?`, 
+        //missing {with employee data}
+        )
+    })
+  }
 
   const viewDepartments = () => {
     connection.query ("SELECT * FROM department", (err,res) => {
@@ -145,7 +142,15 @@ const mainMenu = () => {
     } )
 
   }
-  //other tables match ^^ just change department to whichever table 
+
+  const viewEmployees = () => {
+    connection.query ("SELECT * FROM employee", (err,res) => {
+        if (err) throw err
+        console.table(res)
+        mainMenu();
+    } )
+
+  }
 
   
   const program_exit = () =>{
