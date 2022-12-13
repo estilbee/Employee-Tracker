@@ -72,26 +72,26 @@ const mainMenu = () => {
         {
             type: "list",
             message: "What is the department of the role?",
-            choices: res.map(department => department.name),
+            choices: res.map(department => department.id),
             name: "department"
         }
       ],) .then(data => { 
         let selectedDepartment = res.find(department => department.name === data.department)
         //find the department name that is = to the one in the res ans store it in a variable so we can get its id
    connection.query(
-    `INSERT INTO role SET ?`, {title:data.role_name, salary:data.salary, department_id:selectedDepartment.id})
+    `INSERT INTO role SET ?`, {title:data.role_name, salary:data.salary, department_id:data.department})
     
 })
 })  
   }
 
-  const testAddEmployee = () => {
-    connection.query ('SELECT * FROM role', (err,res) => {
-        //inquirer prompt in here *follow the way addRole looks
-        //map role => role.title (instead of department.name) for role choices
-        //.then convert chosen role title to its id on INSERT INTO SET
-    })
-  }
+  // const testAddEmployee = () => {
+  //   connection.query ('SELECT * FROM role', (err,res) => {
+  //       //inquirer prompt in here *follow the way addRole looks
+  //       //map role => role.title (instead of department.name) for role choices
+  //       //.then convert chosen role title to its id on INSERT INTO SET
+  //   })
+  // }
 
 
   const addEmployee = () => {
@@ -109,7 +109,7 @@ const mainMenu = () => {
         },
         {
             type: "input",
-            message: res.map(role => role.title),
+            message: res.map(role => role.id),
             name: "role"
         },
         {
@@ -119,16 +119,43 @@ const mainMenu = () => {
         }
       ])
       .then(data => { 
-        let selectedEmployee = res.find(department => department.name === data.department)
+        // let selectedEmployee = res.find(department => department.name === data.department)
       return connection.query(
         `INSERT INTO employee SET ?`, 
-        //missing {with employee data}
-        {first_name:data.first_name, last_name:data.last_name, role_id:selectedEmployee.id})
+        {first_name:data.first_name, last_name:data.last_name, role_id:data.role})
     
         })
     })
   }
 
+  const updateEmployee = () => {
+    connection.query ("SELECT * FROM employee", (err,res) => {
+      inquirer.prompt([
+        {
+          type: "input",
+          message: res.map(employee => employee.id),
+          name: "employee"
+      },
+      ])
+.then (data => {
+  const employeeID = data.employee
+   connection.query("SELECT * FROM role", (err,res) => {
+    inquirer.prompt([
+      {
+        type: "input",
+        message: res.map(role => role.id),
+        name: "role"
+    },
+  ])
+  .then (data => {
+    const roleID = data.role
+    connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [roleID, employeeID]);
+    mainMenu();
+  })
+})
+    })
+  }
+)}
   const viewDepartments = () => {
     connection.query ("SELECT * FROM department", (err,res) => {
         if (err) throw err
