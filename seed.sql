@@ -9,9 +9,9 @@ VALUES
 
 INSERT INTO role (title, salary, department_id)
 VALUES 
-("Software Engineer", 150000 , 3 );
+("Software Engineer", 150000 , 1);
 
-INSERT INTO employee (first_name, last_name, role, role_id, salary, department_id, manager_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
-("Olivia", "Daouphars", "Software Engineer", 1 , 150000, 1, 3);
+("Olivia", "Daouphars", 1 , NULL);
 

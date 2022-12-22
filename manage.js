@@ -3,7 +3,7 @@ const connection = require('./connection')
 
 
 const mainMenu = () => {
-    return inquirer.prompt([
+    inquirer.prompt([
       {
         type: "list",
         message: "What would you like to do?",
@@ -13,8 +13,6 @@ const mainMenu = () => {
     ])
     .then(({option}) => {
       switch(option){
-        case "exit":
-          return program_exit();
         case "view all departments":
           viewDepartments();
           break;
@@ -36,6 +34,8 @@ const mainMenu = () => {
         case "update an employee role":
             updateEmployee();
             break;
+        default:
+           program_exit();
       }
     });
   };
@@ -72,14 +72,15 @@ const mainMenu = () => {
         {
             type: "list",
             message: "What is the department of the role?",
-            choices: res.map(department => department.id),
+            choices: res.map(department => department.name),
             name: "department"
         }
       ],) .then(data => { 
         let selectedDepartment = res.find(department => department.name === data.department)
         //find the department name that is = to the one in the res ans store it in a variable so we can get its id
    connection.query(
-    `INSERT INTO role SET ?`, {title:data.role_name, salary:data.salary, department_id:data.department})
+    `INSERT INTO role SET ?`, {title:data.role_name, salary:data.salary, department_id:data.department})  
+    mainMenu();
     
 })
 })  
@@ -108,9 +109,10 @@ const mainMenu = () => {
             name: "last_name"
         },
         {
-            type: "input",
-            message: res.map(role => role.id),
-            name: "role"
+          type: "list",
+          message: "Which of the following is your employee's role?: ",
+          choices: res.map(role => role.title),
+          name: "role",
         },
         {
             type: "input",
