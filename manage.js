@@ -79,7 +79,7 @@ const mainMenu = () => {
         let selectedDepartment = res.find(department => department.name === data.department)
         //find the department name that is = to the one in the res ans store it in a variable so we can get its id
    connection.query(
-    `INSERT INTO role SET ?`, {title:data.role_name, salary:data.salary, department_id:data.department})  
+    `INSERT INTO role SET ?`, {title:data.role_name, salary:data.salary, department:data.department})  
     mainMenu();
     
 })
@@ -124,12 +124,13 @@ const mainMenu = () => {
         // let selectedEmployee = res.find(department => department.name === data.department)
       return connection.query(
         `INSERT INTO employee SET ?`, 
-        {first_name:data.first_name, last_name:data.last_name, role_id:data.role})
+        {first_name:data.first_name, last_name:data.last_name, role:data.role, manager:data.manager})
     
         })
     })
   }
 
+  
   const updateEmployee = () => {
     connection.query ("SELECT * FROM employee", (err,res) => {
       inquirer.prompt([
@@ -137,6 +138,7 @@ const mainMenu = () => {
           type: "input",
           message: res.map(employee => employee.id),
           name: "employee"
+          //should this be a list instead? the way the other functions are- and then you'd choose from the mapped employee list?
       },
       ])
 .then (data => {
@@ -158,6 +160,8 @@ const mainMenu = () => {
     })
   }
 )}
+
+
   const viewDepartments = () => {
     connection.query ("SELECT * FROM department", (err,res) => {
         if (err) throw err
