@@ -5,7 +5,7 @@ With the Employee Tracker, you can quickly create and access important informati
 
 ## Project Preview
 
-![Employee-Tracker](/02-Challenge/Assets/employeetracker.webm)
+![Employee-Tracker](assets/employeetracker.webm)
 
 ## Technologies Used
 - JavaScript
